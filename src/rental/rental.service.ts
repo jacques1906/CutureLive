@@ -82,7 +82,8 @@ export class RentalService {
       
     });
     const savedRental = await this.rentalRepository.save(rental);
-    await this.taskService.scheduleTask(savedRental.rental_id, rentalData.task_type);
+    await this.taskService.scheduleTask(savedRental.rental_id, 'J-5');
+    await this.taskService.scheduleTask(savedRental.rental_id, 'J-3');
 
     return savedRental;
   }
