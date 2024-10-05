@@ -14,8 +14,8 @@ export class InventoryService {
     return this.inventoryRepository.find({ relations: ['film', 'store'] });
   }
 
-  findOne(id: number): Promise<Inventory> {
-    return this.inventoryRepository.findOne({ where: { id }, relations: ['film', 'store'] });
+  findOne(inventory_id: number): Promise<Inventory> {
+    return this.inventoryRepository.findOne({ where: { inventory_id }, relations: ['film', 'store'] });
   }
 
   create(inventoryData: Partial<Inventory>): Promise<Inventory> {
@@ -23,11 +23,18 @@ export class InventoryService {
     return this.inventoryRepository.save(inventory);
   }
 
-  update(id: number, inventoryData: Partial<Inventory>): Promise<Inventory> {
-    return this.inventoryRepository.save({ id, ...inventoryData });
+  update(inventory_id: number, inventoryData: Partial<Inventory>): Promise<Inventory> {
+    return this.inventoryRepository.save({ inventory_id, ...inventoryData });
   }
 
-  delete(id: number): Promise<void> {
-    return this.inventoryRepository.delete(id).then(() => undefined);
+  delete(inventory_id: number): Promise<void> {
+    return this.inventoryRepository.delete(inventory_id).then(() => undefined);
+  }
+
+  async findInventoryById(inventory_id: number): Promise<Inventory> {
+    return this.inventoryRepository.findOne({
+      where: { inventory_id },
+      relations: ['film', 'store'],
+    });
   }
 }

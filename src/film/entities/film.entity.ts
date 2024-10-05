@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Language } from '../../language/entities/language.entity'; 
 
 @Entity('film')
 export class Film {
@@ -14,13 +13,6 @@ export class Film {
 
   @Column({ type: 'integer', nullable: true })
   release_year: number;  
-  @ManyToOne(() => Language)
-  @JoinColumn({ name: 'language_id' }) 
-  language: Language;
-
-  @ManyToOne(() => Language)
-  @JoinColumn({ name: 'original_language_id' })  
-  original_language: Language;
 
   @Column({ type: 'smallint', default: 3 })
   rental_duration: number;

@@ -26,7 +26,7 @@ export class Customer{
   last_update: Date;
 
   @Column({ type: 'int', nullable: true })
-  active: number;  // Ce champ correspond à la colonne "active" de la base de données
+  active: number;
 
   @ManyToOne(() => Store, { eager: true }) 
   @JoinColumn({ name: 'store_id' })

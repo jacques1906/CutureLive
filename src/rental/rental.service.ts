@@ -1,26 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Rental } from './entities/rental.entity';
 import { CreateRentalDto } from './dto/create-rental.dto';
 import { Customer } from 'src/customer/entities/customer.entity'; 
-import { Film } from 'src/film/entities/film.entity'; 
+import { Inventory } from 'src/inventory/entities/inventory.entity';
 import { Staff } from 'src/staff/entities/staff.entity'; 
+import * as dayjs from 'dayjs'; 
+import { TaskService } from 'src/task/task.service';
+import { Task } from 'src/task/entities/task.entity';
 
 @Injectable()
 export class RentalService {
-  update(id: number, rentalData: Partial<Rental>): Promise<Rental> {
-    throw new Error('Method not implemented.');
+  async findAllrental(): Promise<Rental[]> {
+    return this.rentalRepository.find()
   }
-  delete(id: number): Promise<void> {
-    throw new Error('Method not implemented.');
-  }
-  findAll(): Promise<Rental[]> {
-    throw new Error('Method not implemented.');
-  }
-  findOne(id: number): Promise<Rental> {
-    throw new Error('Method not implemented.');
-  }
+
   constructor(
     @InjectRepository(Rental)
     private readonly rentalRepository: Repository<Rental>,
@@ -28,43 +23,67 @@ export class RentalService {
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
 
-    @InjectRepository(Film)
-    private readonly filmRepository: Repository<Film>,
+    @InjectRepository(Inventory)
+    private readonly inventoryRepository: Repository<Inventory>,
 
     @InjectRepository(Staff)
     private readonly staffRepository: Repository<Staff>,
+
+    private readonly taskService: TaskService, 
   ) {}
 
-  async createRental(createRentalDto: CreateRentalDto): Promise<Rental> {
-    const { customer_id, film_id, staff_id, rental_date } = createRentalDto;
+  async createRental(rentalData: CreateRentalDto): Promise<Rental> {
+  
 
-    // Vérifie que le client existe
-    const customer = await this.customerRepository.findOne(customer_id);
-    if (!customer) {
-      throw new NotFoundException(`Customer with ID ${customer_id} not found`);
+    const rental_date = dayjs(rentalData.rental_date);
+    const returnDate = dayjs(rentalData.return_date);
+    const rentalDuration = returnDate.diff(rental_date, 'day');
+
+    if (rentalDuration < 7 || rentalDuration > 21) {
+    throw new BadRequestException('The rental period must be between 7 and 21 days');
     }
-
-    // Vérifie que le film existe
-    const film = await this.filmRepository.findOne(film_id);
-    if (!film) {
-      throw new NotFoundException(`Film with ID ${film_id} not found`);
-    }
-
-    // Vérifie que le staff existe
-    const staff = await this.staffRepository.findOne(staff_id);
-    if (!staff) {
-      throw new NotFoundException(`Staff with ID ${staff_id} not found`);
-    }
-
-    // Créer la location
-    const rental = this.rentalRepository.create({
-      customer,
-      film,
-      staff,
-      rental_date,
+    
+    const customer = await this.customerRepository.findOne({
+      where: { customer_id: rentalData.customer_id, activebool: true},
+      select: ['customer_id'], 
     });
+  
+    if (!customer) {
+      throw new NotFoundException(`Customer with ID ${rentalData.customer_id} not found`);
+    }
 
-    return this.rentalRepository.save(rental);
+
+    const inventory = await this.inventoryRepository.findOne({
+      where: { inventory_id: rentalData.inventory_id },
+      relations: ['film'], 
+    });
+    if (!inventory) {
+      throw new NotFoundException(`Inventory with ID ${rentalData.inventory_id} not found`);
+    }
+
+  
+    const staff = await this.staffRepository.findOne({
+      where: { staff_id: rentalData.staff_id },
+    });
+    if (!staff) {
+      throw new NotFoundException(`Staff with ID ${rentalData.staff_id} not found`);
+    }
+
+
+    const formattedStartDate = rental_date.format('YYYY-MM-DD HH:mm:ss');
+    const formattedReturnDate = returnDate.format('YYYY-MM-DD HH:mm:ss');
+
+    const rental = this.rentalRepository.create({
+      rental_date: rentalData.rental_date,
+      return_date: rentalData.return_date,
+      inventory,
+      customer,
+      staff,
+      
+    });
+    const savedRental = await this.rentalRepository.save(rental);
+    await this.taskService.scheduleTask(savedRental.rental_id, rentalData.task_type);
+
+    return savedRental;
   }
 }
-

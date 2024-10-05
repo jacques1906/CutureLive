@@ -11,9 +11,9 @@ export class InventoryController {
     return this.inventoryService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number): Promise<Inventory> {
-    return this.inventoryService.findOne(id);
+  @Get(':inventory_id')
+  findOne(@Param('inventory_id') inventory_id: number): Promise<Inventory> {
+    return this.inventoryService.findOne(inventory_id);
   }
 
   @Post()
@@ -21,13 +21,13 @@ export class InventoryController {
     return this.inventoryService.create(inventoryData);
   }
 
-  @Put(':id')
-  update(@Param('id') id: number, @Body() inventoryData: Partial<Inventory>): Promise<Inventory> {
-    return this.inventoryService.update(id, inventoryData);
+  @Put(':inventory_id')
+  update(@Param('inventory_id') inventory_id: number, @Body() inventoryData: Partial<Inventory>): Promise<Inventory> {
+    return this.inventoryService.update(inventory_id, inventoryData);
   }
 
-  @Delete(':id')
-  delete(@Param('id') id: number): Promise<void> {
-    return this.inventoryService.delete(id);
+  @Delete(':inventory_id')
+  delete(@Param('inventory_id') inventory_id: number): Promise<void> {
+    return this.inventoryService.delete(inventory_id);
   }
 }
