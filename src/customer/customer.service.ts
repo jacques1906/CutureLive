@@ -9,6 +9,8 @@ import { Store } from 'src/store/entities/store.entity';
 import { Address } from 'src/address/entities/address.entity';
 import { AddressService } from 'src/address/address.service';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
+import { City } from 'src/city/entities/city.entity';
+import { Country } from 'src/country/entities/country.entity';
 
 @Injectable()
 export class CustomerService {
@@ -25,12 +27,75 @@ export class CustomerService {
     @InjectRepository(Address)
     private readonly addressRepository: Repository<Address>,
 
+    @InjectRepository(City)
+    private readonly cityRepository: Repository<City>,
+
+    @InjectRepository(Country)
+    private readonly countryRepository: Repository<Country>,
+
     private readonly addressService: AddressService,
   ) { }
 
   async findCustomerById(id: number): Promise<Customer> {
     return this.customerRepository.findOne({ where: { customer_id: id } });
   }
+
+  async updateCustomer(id: number, updateCustomerDto: UpdateCustomerDto): Promise<Customer> {
+    const customer = await this.customerRepository.findOne({ where: { customer_id: id }, relations: ['address', 'address.city', 'address.city.country'] });
+
+    if (!customer) {
+      throw new NotFoundException(`Customer with ID ${id} not found`);
+    }
+
+    // Mettre à jour les informations de base du client
+    if (updateCustomerDto.first_name) customer.first_name = updateCustomerDto.first_name;
+    if (updateCustomerDto.last_name) customer.last_name = updateCustomerDto.last_name;
+    if (updateCustomerDto.email) customer.email = updateCustomerDto.email;
+
+    const address = customer.address;
+
+    if (!address) {
+      throw new NotFoundException(`Address for customer with ID ${id} not found`);
+    }
+
+    // Mettre à jour l'adresse
+    if (updateCustomerDto.address) address.address = updateCustomerDto.address;
+    if (updateCustomerDto.district) address.district = updateCustomerDto.district;
+    if (updateCustomerDto.postal_code) address.postal_code = updateCustomerDto.postal_code;
+    if (updateCustomerDto.phone) address.phone = updateCustomerDto.phone;
+
+    // Mettre à jour la ville et le pays si fournis
+    if (updateCustomerDto.city || updateCustomerDto.country) {
+      // Rechercher la nouvelle ville
+      const city = await this.cityRepository.findOne({
+        where: { name: updateCustomerDto.city },
+        relations: ['country'],
+      });
+
+      if (!city) {
+        throw new NotFoundException(`City with name ${updateCustomerDto.city} not found`);
+      }
+
+      // Vérifier que le pays est cohérent avec la ville
+      if (updateCustomerDto.country && city.country.country !== updateCustomerDto.country) {
+        const country = await this.countryRepository.findOne({ where: { country: updateCustomerDto.country } });
+        if (!country) {
+          throw new NotFoundException(`Country with name ${updateCustomerDto.country} not found`);
+        }
+        // Mettre à jour la ville et le pays de l'adresse
+        city.country = country;
+      }
+
+      address.city = city;
+    }
+
+    // Enregistrer l'adresse mise à jour
+    await this.addressRepository.save(address);
+
+    // Enregistrer les informations du client mises à jour
+    return this.customerRepository.save(customer);
+  }
+
 
   async create(customerData: CreateCustomerDto): Promise<Customer> {
     const store = await this.storeRepository.findOne({ where: { store_id: customerData.store_id } });

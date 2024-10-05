@@ -3,7 +3,6 @@ import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { Customer } from './entities/customer.entity';
-import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 
 
 @Controller('customers')
@@ -31,12 +30,11 @@ export class CustomerController {
     return this.customerService.create(data);
   }
 
- 
-  @Put(':customerId/address')
-  async updateCustomerAddress(
-    @Param('customerId') customerId: number,
-    @Body() updateAddressDto: UpdateAddressDto,
-  ) {
-    return this.customerService.updateCustomerAddress(customerId, updateAddressDto);
+  @Put(':id')
+  async updateCustomers(
+    @Param('id') id: number,
+    @Body() updateCustomerDto: UpdateCustomerDto
+  ): Promise<Customer> {
+    return this.customerService.updateCustomer(id, updateCustomerDto);
   }
 }
