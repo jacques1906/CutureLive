@@ -47,7 +47,6 @@ export class CustomerService {
       throw new NotFoundException(`Customer with ID ${id} not found`);
     }
 
-    // Mettre à jour les informations de base du client
     if (updateCustomerDto.first_name) customer.first_name = updateCustomerDto.first_name;
     if (updateCustomerDto.last_name) customer.last_name = updateCustomerDto.last_name;
     if (updateCustomerDto.email) customer.email = updateCustomerDto.email;
@@ -58,15 +57,15 @@ export class CustomerService {
       throw new NotFoundException(`Address for customer with ID ${id} not found`);
     }
 
-    // Mettre à jour l'adresse
+
     if (updateCustomerDto.address) address.address = updateCustomerDto.address;
     if (updateCustomerDto.district) address.district = updateCustomerDto.district;
     if (updateCustomerDto.postal_code) address.postal_code = updateCustomerDto.postal_code;
     if (updateCustomerDto.phone) address.phone = updateCustomerDto.phone;
 
-    // Mettre à jour la ville et le pays si fournis
+
     if (updateCustomerDto.city || updateCustomerDto.country) {
-      // Rechercher la nouvelle ville
+
       const city = await this.cityRepository.findOne({
         where: { name: updateCustomerDto.city },
         relations: ['country'],
@@ -76,23 +75,21 @@ export class CustomerService {
         throw new NotFoundException(`City with name ${updateCustomerDto.city} not found`);
       }
 
-      // Vérifier que le pays est cohérent avec la ville
+
       if (updateCustomerDto.country && city.country.country !== updateCustomerDto.country) {
         const country = await this.countryRepository.findOne({ where: { country: updateCustomerDto.country } });
         if (!country) {
           throw new NotFoundException(`Country with name ${updateCustomerDto.country} not found`);
         }
-        // Mettre à jour la ville et le pays de l'adresse
+
         city.country = country;
       }
 
       address.city = city;
     }
 
-    // Enregistrer l'adresse mise à jour
     await this.addressRepository.save(address);
 
-    // Enregistrer les informations du client mises à jour
     return this.customerRepository.save(customer);
   }
 
