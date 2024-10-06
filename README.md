@@ -69,7 +69,7 @@ This service sends email notifications to customers 5 days (J-5) and 3 days (J-3
 1. **Add a customer**:
    - `POST /customers`
     ```json
-{
+    {
     "first_name": "Joean",
     "last_name": "Test",
     "email": "john.do@example.com",
@@ -80,13 +80,13 @@ This service sends email notifications to customers 5 days (J-5) and 3 days (J-3
     "phone": "011232432322",
     "city_name": "Mahajanga",
     "country_name": "Sezn"
-}
+    }
    ```
 2. **Update a customer**:
     - `PUT /customers/:id`
     -Payload:
       ```json
-    {
+      {
       "first_name": "John",
       "last_name": "Doe",
       "email": "john.doe@example.com",
@@ -96,20 +96,20 @@ This service sends email notifications to customers 5 days (J-5) and 3 days (J-3
       "phone": "123-456-78290",
       "city": "Ziguinchor",
       "country": "Moldova"
-    }
-    ```
+      }
+      ```
 
 2. **Create a rental**:
    - `POST /rentals`
    - Payload:
      ```json
-    {
+      {
       "customer_id": 90,
       "inventory_id": 68,
       "staff_id": 2,
       "rental_date": "2024-10-10",
       "return_date": "2024-10-21"
-    }
+      }
 
      ```
 
