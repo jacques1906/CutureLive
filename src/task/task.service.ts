@@ -160,18 +160,27 @@ export class TaskService {
     return this.taskRepository.save(task);
 }
 
-  async checkTaskStatus(task_id: number): Promise<{ task_id: number, is_sent: boolean }> {
-    const task = await this.taskRepository.findOne({
+async checkTaskStatus(task_id: number): Promise<{ status: string, task: Task }> {
+  const task = await this.taskRepository.findOne({
       where: { task_id },
-    });
+      relations: ['customer', 'rental'],
+  });
 
-    if (!task) {
+  if (!task) {
       throw new NotFoundException(`Task with ID ${task_id} not found`);
-    }
-
-    return {
-      task_id: task.task_id,
-      is_sent: task.is_sent,
-    };
   }
+
+  if (task.is_sent) {
+      return {
+          status: `The task with ID ${task_id} has already been executed.`,
+          task: task
+      };
+  } else {
+      return {
+          status: `The task with ID ${task_id} is scheduled for: ${task.send_date} and has not been sent yet.`,
+          task: task
+      };
+  }
+}
+
 }

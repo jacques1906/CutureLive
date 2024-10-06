@@ -90,6 +90,7 @@ export class CustomerService {
 
     await this.addressRepository.save(address);
 
+
     return this.customerRepository.save(customer);
   }
 
