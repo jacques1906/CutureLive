@@ -45,7 +45,7 @@ This service sends email notifications to customers 5 days (J-5) and 3 days (J-3
 
 3. Install the PostgreSQL "Sakila" database with the schema and data:
    ```bash
-   "psql -U <username> -d <dbname> -f <path_to_file.sql>.sql"
+   psql -U <username> -d <dbname> -f <path_to_file.sql>.sql
    ```
 
 4. Configure environment variables (example `.env`):
