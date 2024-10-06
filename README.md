@@ -81,7 +81,6 @@ This service sends email notifications to customers 5 days (J-5) and 3 days (J-3
     "phone": "011232432322",
     "city_name": "Mahajanga",
     "country_name": "Sezn"
-
 }
      ```
 2. **Update a customer**:
