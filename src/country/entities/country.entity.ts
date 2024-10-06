@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('country')  // Associe cette entité à la table "country"
+@Entity('country') 
 export class Country {
-  @PrimaryGeneratedColumn({ name: 'country_id' })
-  id: number;
+  @PrimaryGeneratedColumn({})
+  country_id: number;
 
   @Column({ type: 'varchar', length: 50 })
   country: string;

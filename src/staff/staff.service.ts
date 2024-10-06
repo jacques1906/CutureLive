@@ -15,7 +15,7 @@ export class StaffService {
   }
 
   findOne(id: number): Promise<Staff> {
-    return this.staffRepository.findOne({ where: { id }, relations: ['address', 'store'] });
+    return this.staffRepository.findOne({ where: { staff_id: id }, relations: ['address', 'store'] });
   }
 
   create(staffData: Partial<Staff>): Promise<Staff> {

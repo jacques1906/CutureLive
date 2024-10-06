@@ -4,8 +4,8 @@ import { Country } from 'src/country/entities/country.entity';
 
 @Entity('city')
 export class City {
-  @PrimaryGeneratedColumn({ name: 'city_id' })
-  id: number;
+  @PrimaryGeneratedColumn({})
+  city_id: number;
 
   @Column({ type: 'varchar', length: 100, name: 'city'  })
   name: string;

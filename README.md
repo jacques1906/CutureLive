@@ -1,85 +1,128 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend Notification Service for Film Rentals
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Context
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+As a backend developer for a film rental company, the goal is to improve the management of film returns by reminding customers of their rental return due date to avoid delays.
 
-## Description
+## Objective
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This service sends email notifications to customers 5 days (J-5) and 3 days (J-3) before their rental return date, at 12:00 local time, taking into account the customer's time zone.
 
-## Project setup
+## Features
 
-```bash
-$ npm install
-```
+- Customer management (add/modify)
+- Film rental management (create and manage)
+- Scheduled tasks to send email notifications to customers before their rental due date:
+  - 5 days (J-5) before at 12:00
+  - 3 days (J-3) before at 12:00
+- API to:
+  - Add/modify a customer
+  - Perform a rental
+  - List all scheduled tasks
+  - Manually trigger a scheduled task
+  - Check the execution status of a scheduled task
 
-## Compile and run the project
+## Technical Requirements
 
-```bash
-# development
-$ npm run start
+- **Database**: PostgreSQL with the "Sakila" schema
+- **Framework**: NestJS
+- **ORM**: TypeORM
+- **Scheduled tasks management**: Using the `@nestjs/schedule` package
+- **TimeZone**:
+- **Mail service simulation**: Simple log for email notifications
 
-# watch mode
-$ npm run start:dev
+## Installation
 
-# production mode
-$ npm run start:prod
-```
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/jacques1906/CutureLive
+   ```
 
-## Run tests
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```bash
-# unit tests
-$ npm run test
+3. Install the PostgreSQL "Sakila" database with the schema and data:
+   ```bash
+   psql -U <username> -d <dbname> -f <path_to_file.sql>.sql
+   ```
 
-# e2e tests
-$ npm run test:e2e
+4. Configure environment variables (example `.env`):
+   ```
+   DATABASE_URL=postgresql://user:password@localhost:5432/sakila
+   ```
 
-# test coverage
-$ npm run test:cov
-```
+## Running the Application
 
-## Resources
+- To start the NestJS application:
+  ```bash
+  npm run start
+  ```
 
-Check out a few resources that may come in handy when working with NestJS:
+- Access the API at the following URL: `http://localhost:3000`
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## API Request
 
-## Support
+1. **Add a customer**:
+   - `POST /customers`
+    ```json
+    {
+    "first_name": "Joean",
+    "last_name": "Test",
+    "email": "john.do@example.com",
+    "store_id": 1,
+    "address": "asa",
+    "district": "iriw",
+    "postal_code": "75200",
+    "phone": "011232432322",
+    "city_name": "Mahajanga",
+    "country_name": "Sezn"
+    }
+   ```
+2. **Update a customer**:
+    - `PUT /customers/:id`
+    -Payload:
+      ```json
+      {
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example.com",
+      "address": "New Street 123",
+      "district": "New District",
+      "postal_code": "12345",
+      "phone": "123-456-78290",
+      "city": "Ziguinchor",
+      "country": "Moldova"
+      }
+      ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+2. **Create a rental**:
+   - `POST /rentals`
+   - Payload:
+     ```json
+      {
+      "customer_id": 90,
+      "inventory_id": 68,
+      "staff_id": 2,
+      "rental_date": "2024-10-10",
+      "return_date": "2024-10-21"
+      }
 
-## Stay in touch
+     ```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+3. **List scheduled tasks**:
+   - `GET /tasks`
 
-## License
+4. **Manually trigger a scheduled task**:
+   - `POST /tasks/:id/run`
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+5.  **Check the execution status of a scheduled task**:
+    - `GET /tasks/:id/status`
+
+## Tests
+
+- To run tests:
+  ```bash
+  npm run test
+  ```

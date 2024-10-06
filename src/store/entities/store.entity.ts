@@ -2,16 +2,16 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { Address } from '../../address/entities/address.entity';
 import { Staff } from '../../staff/entities/staff.entity';
 
-@Entity('store')  // L'entité correspond à la table "store"
+@Entity('store') 
 export class Store {
   @PrimaryGeneratedColumn({ name: 'store_id' })
   store_id: number;
 
-  @ManyToOne(() => Staff)  // Relation avec la table Staff (manager)
+  @ManyToOne(() => Staff) 
   @JoinColumn({ name: 'manager_staff_id' })
   manager: Staff;
 
-  @ManyToOne(() => Address)  // Relation avec la table Address
+  @ManyToOne(() => Address) 
   @JoinColumn({ name: 'address_id' })
   address: Address;
  

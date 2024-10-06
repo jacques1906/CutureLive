@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, NotFoundException } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -15,8 +15,14 @@ export class CustomerController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Customer> {
-    return this.customerService.findCustomerById(id);
+  async findOne(@Param('id') id: number): Promise<Customer> {
+    const customer = await this.customerService.findCustomerById(id);
+    
+    if (!customer) {
+      throw new NotFoundException(`Customer with ID ${id} not found`);
+    }
+
+    return customer;
   }
 
   @Post()
@@ -25,7 +31,10 @@ export class CustomerController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() data: Partial<Customer>): Promise<Customer> {
-    return this.customerService.updateCustomer(id, data);
+  async updateCustomers(
+    @Param('id') id: number,
+    @Body() updateCustomerDto: UpdateCustomerDto
+  ): Promise<Customer> {
+    return this.customerService.updateCustomer(id, updateCustomerDto);
   }
 }
