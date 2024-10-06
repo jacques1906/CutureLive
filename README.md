@@ -24,7 +24,7 @@ This service sends email notifications to customers 5 days (J-5) and 3 days (J-3
 
 ## Technical Requirements
 
-- **Database**: PostgreSQL with the "Sakila" schema available [here](https://github.com/jOOQ/sakila/tree/main/postgres-sakila-db)
+- **Database**: PostgreSQL with the "Sakila" schema
 - **Framework**: NestJS
 - **ORM**: TypeORM
 - **Scheduled tasks management**: Using the `@nestjs/schedule` package
@@ -44,13 +44,11 @@ This service sends email notifications to customers 5 days (J-5) and 3 days (J-3
    ```
 
 3. Install the PostgreSQL "Sakila" database with the schema and data:
-   - Link to the database: [Sakila PostgreSQL](https://github.com/jOOQ/sakila/tree/main/postgres-sakila-db)
-   
-4. Adding table "task"  to the Database:
-- Open a Bash terminal.
-- Use the following command to import a .sql file: "psql -U <username> -d <dbname> -f <path_to_file_Add_Task_pgadmin.sql>.sql"
+   ```bash
+   "psql -U <username> -d <dbname> -f <path_to_file.sql>.sql"
+   ```
 
-5. Configure environment variables (example `.env`):
+4. Configure environment variables (example `.env`):
    ```
    DATABASE_URL=postgresql://user:password@localhost:5432/sakila
    ```
