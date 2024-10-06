@@ -2,10 +2,10 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { Address } from '../../address/entities/address.entity';
 import { Store } from '../../store/entities/store.entity';
 
-@Entity('staff')  // Indique que cette entité correspond à la table "staff"
+@Entity('staff')  
 export class Staff {
-  @PrimaryGeneratedColumn({ name: 'staff_id' })
-  id: number;
+  @PrimaryGeneratedColumn({ })
+  staff_id: number;
 
   @Column({ type: 'varchar', length: 45 })
   first_name: string;
@@ -13,14 +13,14 @@ export class Staff {
   @Column({ type: 'varchar', length: 45 })
   last_name: string;
 
-  @ManyToOne(() => Address)  // Relation avec Address
+  @ManyToOne(() => Address) 
   @JoinColumn({ name: 'address_id' })
   address: Address;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   email: string;
 
-  @ManyToOne(() => Store)  // Relation avec Store
+  @ManyToOne(() => Store)  
   @JoinColumn({ name: 'store_id' })
   store: Store;
 
@@ -37,5 +37,5 @@ export class Staff {
   last_update: Date;
 
   @Column({ type: 'bytea', nullable: true })
-  picture: Buffer;  // Stockage des images sous forme de données binaires (bytea)
+  picture: Buffer;  
 }

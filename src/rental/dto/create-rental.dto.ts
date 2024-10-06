@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt } from 'class-validator';
+import { IsNotEmpty, IsInt, IsDate } from 'class-validator';
 
 export class CreateRentalDto {
   @IsNotEmpty()
@@ -7,12 +7,19 @@ export class CreateRentalDto {
 
   @IsNotEmpty()
   @IsInt()
-  film_id: number;
+  inventory_id: number;
 
   @IsNotEmpty()
   @IsInt()
   staff_id: number;
 
   @IsNotEmpty()
+  @IsDate()
   rental_date: Date;
+
+  @IsNotEmpty()
+  @IsDate()
+  return_date: Date;
+
+  task_type: string;
 }

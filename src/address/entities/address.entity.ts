@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { City } from '../../city/entities/city.entity';
 import { Country } from 'src/country/entities/country.entity';
 
-@Entity('address')  // Associe cette entité à la table "address"
+@Entity('address') 
 export class Address {
   @PrimaryGeneratedColumn({ name: 'address_id' })
   address_id: number;

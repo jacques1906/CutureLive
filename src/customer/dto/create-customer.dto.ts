@@ -4,7 +4,7 @@ export class CreateCustomerDto {
   first_name: string;
   last_name: string;
   email: string;
-  store_id: number;  // Utiliser store_id pour associer le client à un magasin
+  store_id: number; 
   activebool: boolean;
   active: number;
   address_id: number;

@@ -15,7 +15,7 @@ export class CountryService {
   }
 
   findOne(id: number): Promise<Country> {
-    return this.countryRepository.findOne({ where: { id } });
+    return this.countryRepository.findOne({ where: { country_id : id} });
   }
 
   create(countryData: Partial<Country>): Promise<Country> {
