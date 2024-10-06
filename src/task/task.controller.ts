@@ -24,11 +24,12 @@ export class TaskController {
   async getTaskById(@Param('id') id: number): Promise<Task> {
     return this.taskService.findTaskById(id);
   }
-
   @Get(':id/status')
   async checkTaskStatus(@Param('id') id: number): Promise<{ task_id: number, is_sent: boolean }> {
     return this.taskService.checkTaskStatus(id);
     }
+
+    
 @Post(':id/run')
 async runTaskManually(@Param('id') id: number): Promise<Task> {
   return this.taskService.runTaskManually(id);

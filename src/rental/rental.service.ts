@@ -8,7 +8,6 @@ import { Inventory } from 'src/inventory/entities/inventory.entity';
 import { Staff } from 'src/staff/entities/staff.entity'; 
 import * as dayjs from 'dayjs'; 
 import { TaskService } from 'src/task/task.service';
-import { Task } from 'src/task/entities/task.entity';
 
 @Injectable()
 export class RentalService {
