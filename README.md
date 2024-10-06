@@ -68,8 +68,7 @@ This service sends email notifications to customers 5 days (J-5) and 3 days (J-3
 
 1. **Add a customer**:
    - `POST /customers`
-   - Payload:
-     ```json
+    ```json
 {
     "first_name": "Joean",
     "last_name": "Test",
@@ -82,7 +81,7 @@ This service sends email notifications to customers 5 days (J-5) and 3 days (J-3
     "city_name": "Mahajanga",
     "country_name": "Sezn"
 }
-     ```
+   ```
 2. **Update a customer**:
     - `PUT /customers/:id`
     -Payload:
