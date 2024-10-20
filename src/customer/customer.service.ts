@@ -11,6 +11,7 @@ import { AddressService } from 'src/address/address.service';
 import { UpdateAddressDto } from 'src/address/dto/update-address.dto';
 import { City } from 'src/city/entities/city.entity';
 import { Country } from 'src/country/entities/country.entity';
+import { FindCustomersQueryDto } from './dto/find-customers-query.dto';
 
 @Injectable()
 export class CustomerService {
@@ -94,7 +95,6 @@ export class CustomerService {
     return this.customerRepository.save(customer);
   }
 
-
   async create(customerData: CreateCustomerDto): Promise<Customer> {
     const store = await this.storeRepository.findOne({ where: { store_id: customerData.store_id } });
 
@@ -136,7 +136,7 @@ export class CustomerService {
 
     return this.customerRepository.save(customer);
   }
-  
+
   async update(addressId: number, updateAddressDto: UpdateAddressDto): Promise<Address> {
     const address = await this.addressRepository.findOne({ where: { address_id: addressId } });
 
@@ -146,11 +146,47 @@ export class CustomerService {
 
     Object.assign(address, updateAddressDto);
 
-    return this.addressRepository.save(address);  
+    return this.addressRepository.save(address);
   }
 
-  async findAllCustomers(): Promise<Customer[]> {
-    return this.customerRepository.find()
+  async findAllCustomers(query: FindCustomersQueryDto) {
+    const { firstName, lastName, email, page, limit, sortBy, sortOrder } = query;
+
+    const queryBuilder = this.customerRepository.createQueryBuilder('customer');
+
+    if (firstName) {
+      queryBuilder.andWhere('customer.first_name ILIKE :firstName', { firstName: `%${firstName}%` });
+    }
+
+    if (lastName) {
+      queryBuilder.andWhere('customer.last_name ILIKE :lastName', { lastName: `%${lastName}%` });
+    }
+
+    if (email) {
+      queryBuilder.andWhere('customer.email ILIKE :email', { email: `%${email}%` });
+    }
+
+    queryBuilder.orderBy(`customer.${sortBy}`, sortOrder);
+    try {
+      const total = await queryBuilder.getCount();
+
+      const customers = await queryBuilder
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getMany();
+
+      return {
+        data: customers,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      }
+    } catch (error) {
+      console.error('error', error);
+      throw error;
+    }
+
   }
 
   async deleteCustomer(id: number): Promise<void> {

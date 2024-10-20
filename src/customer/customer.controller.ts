@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, NotFoundException, Query } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { Customer } from './entities/customer.entity';
+import { FindCustomersQueryDto } from './dto/find-customers-query.dto';
 
 
 @Controller('customers')
@@ -10,8 +11,8 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Get()
-  findAll(): Promise<Customer[]> {
-    return this.customerService.findAllCustomers();
+  findAll(@Query() query: FindCustomersQueryDto) {
+    return this.customerService.findAllCustomers(query);
   }
 
   @Get(':id')
